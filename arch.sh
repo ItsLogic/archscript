@@ -88,7 +88,7 @@ else
 fi
 sed -i 's/#Parallel/Parallel/g' /etc/pacman.conf
 sed -i 's/#Color/Color/g' /etc/pacman.conf
-pacstrap /mnt base linux linux-firmware nvidia-dkms zsh amdgpu nano grub efibootmgr os-prober neofetch sudo --noconfirm
+pacstrap /mnt base linux linux-firmware nvidia-dkms zsh nano grub efibootmgr os-prober neofetch sudo --noconfirm
 genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
 echo "${hostname}" > /mnt/etc/hostname
 echo "LANG=en_GB.UTF-8" > /mnt/etc/locale.conf
