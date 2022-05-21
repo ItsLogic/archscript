@@ -88,4 +88,15 @@ else
 fi
 sed -i 's/#Parallel/Parallel/g' /etc/pacman.conf
 sed -i 's/#Color/Color/g' /etc/pacman.conf
-pacstrap /mnt base linux linux-firmware --noconfirm
+pacstrap /mnt base linux linux-firmware nvidia-dkms zsh amdgpu nano grub efibootmgr os-prober neofetch --noconfirm
+genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
+echo "${hostname}" > /mnt/etc/hostname
+sed -i 's/#Parallel/Parallel/g' /mnt/etc/pacman.conf
+sed -i 's/#Color/Color/g' /mnt/etc/pacman.conf
+arch-chroot /mnt grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/
+sed -i 's/#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/g' /mnt/etc/default/grub
+arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+arch-chroot /mnt useradd -mU -s /usr/bin/zsh -G wheel"$user"
+arch-chroot /mnt chsh -s /usr/bin/zsh
+echo "$user:$password" | chpasswd --root /mnt
+echo "root:$password" | chpasswd --root /mnt
