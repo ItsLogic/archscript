@@ -1,7 +1,8 @@
 #!/bin/bash
 #customised arch install script for my system
 #only on github so I can download it from memory
-
+pacman -Sy dialog --noconfirm
+clear
 hostname=$(dialog --stdout --inputbox "Enter hostname" 0 0) || exit 1
 clear
 : ${hostname:?"hostname cannot be empty"}
@@ -85,4 +86,6 @@ else
     mkdir /mnt/boot
     mount "${part_boot}" /mnt/boot
 fi
-
+sed -i 's/#Parallel/Parallel/g' /etc/pacman.conf
+sed -i 's/#Color/Color/g' /etc/pacman.conf
+pacstrap /mnt base linux linux-firmware --noconfirm
