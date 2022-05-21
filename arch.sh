@@ -86,10 +86,18 @@ else
     mkdir /mnt/boot
     mount "${part_boot}" /mnt/boot
 fi
+
+#edit pacman for colour(useless) and parallel downloads in the installer iso for a faster install
 sed -i 's/#Parallel/Parallel/g' /etc/pacman.conf
 sed -i 's/#Color/Color/g' /etc/pacman.conf
+
+#install initial packages with pacstrap
 pacstrap /mnt base linux linux-firmware nvidia-dkms zsh nano grub efibootmgr os-prober neofetch sudo --noconfirm
+
+#generate fstab file
 genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
+
+#set hostname, locale and timezone
 echo "${hostname}" > /mnt/etc/hostname
 echo "LANG=en_GB.UTF-8" > /mnt/etc/locale.conf
 echo "en_GB.UTF-8 UTF-8" >> /mnt/etc/locale.gen
@@ -97,16 +105,23 @@ echo "en_GB ISO-8859-1" >> /mnt/etc/locale.gen
 arch-chroot /mnt locale-gen
 arch-chroot /mnt timedatectl set-timezone Europe/London
 
+#set colour and parallel downloads on the new install
 sed -i 's/#Parallel/Parallel/g' /mnt/etc/pacman.conf
 sed -i 's/#Color/Color/g' /mnt/etc/pacman.conf
+
+#install grub
 arch-chroot /mnt grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/
 sed -i 's/#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/g' /mnt/etc/default/grub
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+
+#set hosts file
 echo "127.0.0.1	localhost" >> /mnt/etc/hosts
 echo "::1		localhost" >> /mnt/etc/hosts
 echo "127.0.1.1	${hostname}" >> /mnt/etc/hosts
 
+#create user and change root user password
 arch-chroot /mnt useradd -mU -s /usr/bin/zsh -G wheel "$user"
 arch-chroot /mnt chsh -s /usr/bin/zsh
 echo "$user:$password" | chpasswd --root /mnt
 echo "root:$password" | chpasswd --root /mnt
+reboot
