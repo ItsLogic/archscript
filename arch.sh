@@ -1,6 +1,21 @@
 #!/bin/bash
-#customised arch install script for my system
+#customised arch install script for my system using parts of the disconnected.systems arch installer(user input and drive partitioning)
 #only on github so I can download it from memory
+#done
+#drive partitions
+#user input
+#base install that boots
+
+#todo
+#sudo permissions
+#customised packages (firefox, discord, git stuff like yay and powercord, whole qemu virtualisation suite)
+#desktop environment(kde along with basic kde apps like kate, konsole, dolphin and any settings/interface apps I need)
+#dot files and kde theme (gonna be dracula theme with a custom latte dock)
+
+
+
+
+
 pacman -Sy dialog --noconfirm
 clear
 hostname=$(dialog --stdout --inputbox "Enter hostname" 0 0) || exit 1
@@ -92,7 +107,7 @@ sed -i 's/#Parallel/Parallel/g' /etc/pacman.conf
 sed -i 's/#Color/Color/g' /etc/pacman.conf
 
 #install initial packages with pacstrap
-pacstrap /mnt base linux linux-firmware nvidia-dkms zsh nano grub efibootmgr os-prober neofetch sudo --noconfirm
+pacstrap /mnt base linux linux-firmware nvidia-dkms zsh nano grub efibootmgr os-prober neofetch sudo plasma sddm --noconfirm
 
 #generate fstab file
 genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
@@ -125,3 +140,6 @@ arch-chroot /mnt chsh -s /usr/bin/zsh
 echo "$user:$password" | chpasswd --root /mnt
 echo "root:$password" | chpasswd --root /mnt
 reboot
+
+#enable sddm
+arch-chroot /mnt systemctl enable sddm
