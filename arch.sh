@@ -107,7 +107,7 @@ sed -i 's/#Parallel/Parallel/g' /etc/pacman.conf
 sed -i 's/#Color/Color/g' /etc/pacman.conf
 
 #install initial packages with pacstrap
-pacstrap /mnt base linux linux-firmware nvidia-dkms zsh nano grub efibootmgr os-prober neofetch sudo plasma sddm --noconfirm
+pacstrap /mnt base linux linux-firmware nvidia-dkms zsh nano grub efibootmgr os-prober neofetch sudo plasma sddm konsole git base-devel --noconfirm
 
 #generate fstab file
 genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
@@ -134,12 +134,15 @@ echo "127.0.0.1	localhost" >> /mnt/etc/hosts
 echo "::1		localhost" >> /mnt/etc/hosts
 echo "127.0.1.1	${hostname}" >> /mnt/etc/hosts
 
-#create user and change root user password
+#create user and change root user password and give sudo to wheel group
 arch-chroot /mnt useradd -mU -s /usr/bin/zsh -G wheel "$user"
 arch-chroot /mnt chsh -s /usr/bin/zsh
 echo "$user:$password" | chpasswd --root /mnt
 echo "root:$password" | chpasswd --root /mnt
-reboot
+sed -i 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g' /mnt/etc/sudoers
 
-#enable sddm
+#enable services
 arch-chroot /mnt systemctl enable sddm
+arch-chroot /mnt systemctl enable NetworkManager
+
+reboot
