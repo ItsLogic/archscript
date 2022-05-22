@@ -107,7 +107,7 @@ sed -i 's/#Parallel/Parallel/g' /etc/pacman.conf
 sed -i 's/#Color/Color/g' /etc/pacman.conf
 
 #install initial packages with pacstrap
-pacstrap /mnt base linux linux-firmware nvidia-dkms zsh nano grub efibootmgr os-prober neofetch sudo plasma sddm konsole git base-devel --noconfirm
+pacstrap /mnt base linux linux-firmware nvidia-dkms zsh nano grub efibootmgr os-prober neofetch sudo plasma sddm konsole git base-devel dolphin --noconfirm
 
 #generate fstab file
 genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
